@@ -1,36 +1,25 @@
 import os
 import json
 import requests
-from datetime import datetime, timedelta
 import random
+from datetime import datetime, timedelta
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
+MESSAGES_FILE = "messages.json"
 HISTORY_FILE = "history.json"
 MAX_DAYS = 30
 
-MESSAGES = [
-    "🧠 Focus\nCe que tu répètes devient ton identité.",
-    "💡 Clarté\nLa confusion vient rarement d’un manque d’informations.",
-    "📈 Business\nUn système médiocre exécuté chaque jour bat une stratégie parfaite jamais lancée.",
-    "🎯 Priorité\nSi tout est important, rien ne l’est.",
-    "⚙️ Process\nCe qui n’est pas mesuré dérive.",
-    "🧠 Mental\nLa discipline est une forme de respect envers soi-même.",
-    "💡 Insight\nArrêter est parfois plus stratégique que continuer.",
-    "📈 Levier\nUn petit avantage répété devient énorme avec le temps.",
-    "🎯 Décision\nCe que tu repousses aujourd’hui te coûtera demain."
-]
-
-def load_history():
-    if not os.path.exists(HISTORY_FILE):
-        return []
-    with open(HISTORY_FILE, "r") as f:
+def load_json(file_path, default):
+    if not os.path.exists(file_path):
+        return default
+    with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
-def save_history(history):
-    with open(HISTORY_FILE, "w") as f:
-        json.dump(history, f, indent=2)
+def save_json(file_path, data):
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
 
 def clean_history(history):
     cutoff = datetime.utcnow() - timedelta(days=MAX_DAYS)
@@ -44,14 +33,16 @@ def send_message(text):
     requests.post(url, data={"chat_id": CHAT_ID, "text": text})
 
 if __name__ == "__main__":
-    history = load_history()
-    history = clean_history(history)
+    messages = load_json(MESSAGES_FILE, [])
+    history = load_json(HISTORY_FILE, [])
 
+    history = clean_history(history)
     used_messages = {h["message"] for h in history}
-    available_messages = [m for m in MESSAGES if m not in used_messages]
+
+    available_messages = [m for m in messages if m not in used_messages]
 
     if not available_messages:
-        available_messages = MESSAGES  # reset propre
+        available_messages = messages  # reset après 30 jours
 
     message = random.choice(available_messages)
 
@@ -62,4 +53,4 @@ if __name__ == "__main__":
         "message": message
     })
 
-    save_history(history)
+    save_json(HISTORY_FILE, history)
