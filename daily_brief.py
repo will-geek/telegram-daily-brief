@@ -2,8 +2,8 @@ import os
 import requests
 import random
 
-TELEGRAM_TOKEN = os.getenv("7720152782:AAFr5mbjfmzCxD95IFuDego5Wq7rVZT5z-0")
-CHAT_ID = os.getenv("1520967509")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 MESSAGES = [
     "🧠 Idée du jour\nLa clarté vient souvent de ce qu’on décide d’arrêter.",
