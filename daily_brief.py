@@ -9,7 +9,7 @@ CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 MESSAGES_FILE = "messages.json"
 HISTORY_FILE = "history.json"
-MAX_DAYS = 30
+MAX_DAYS = 90
 
 def load_json(file_path, default):
     if not os.path.exists(file_path):
