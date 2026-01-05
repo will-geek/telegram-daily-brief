@@ -42,7 +42,7 @@ if __name__ == "__main__":
     available_messages = [m for m in messages if m not in used_messages]
 
     if not available_messages:
-        available_messages = messages  # reset après 30 jours
+        available_messages = messages  # reset après 90 jours
 
     message = random.choice(available_messages)
 
